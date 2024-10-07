@@ -1,5 +1,7 @@
 # go-auth-starter
-A starter go project with auth. Uses Echo web server, Templ and HTMX for frontend, Sqlite3 and Goose for DB migrations and Air for hot reloading.
+A starter go project with auth. After building a bigger SaaS style project, I wanted to pull this out to use as a starter example.
+
+Uses Echo web server, Templ and HTMX for frontend, Sqlite3 and Goose for DB migrations and Air for hot reloading. This has basic user registration with cookie authentication.
 
 ## Setup
 
