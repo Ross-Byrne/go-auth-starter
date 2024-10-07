@@ -1,0 +1,108 @@
+package register
+
+import (
+	"go-auth-starter/app/utils"
+	"go-auth-starter/app/views/components"
+	"go-auth-starter/app/views/icons"
+	"go-auth-starter/types/validation"
+)
+
+func (values *RegisterFormValues) Validate() validation.FormErrors {
+	errors := validation.FormErrors{}
+	required := []struct {
+		key   string
+		field string
+	}{
+		{"first_name", values.FirstName},
+		{"last_name", values.LastName},
+		{"workspace", values.Workspace},
+		{"password", values.Password},
+		{"confirm_password", values.ConfirmPassword},
+	}
+
+	if len(values.Password) < validation.MINIMUM_PASSWORD_LENGTH {
+		errors["password"] = validation.PASSWORD_MINIMUM_LENGTH_MESSAGE
+	}
+
+	for _, value := range required {
+		if len(value.field) == 0 {
+			errors[value.key] = validation.REQUIRE_FIELD_MESSAGE
+		}
+	}
+
+	if len(values.Email) == 0 {
+		errors["email"] = validation.REQUIRE_FIELD_MESSAGE
+	} else if !utils.IsValidEmail(values.Email) {
+		errors["email"] = validation.VALID_EMAIL_MESSAGE
+	} else if available, err := utils.IsUserEmailAvailable(values.Email); !available || err != nil {
+		errors["email"] = "Email address unavailable"
+	}
+
+	if values.Password != values.ConfirmPassword {
+		errors["confirm_password"] = validation.PASSWORD_MUST_MATCH_MESSAGE
+	}
+
+	return errors
+}
+
+templ RegisterForm(values RegisterFormValues, errors validation.FormErrors) {
+	@components.PostForm(components.PostFormProps{
+		Url:      "/register",
+		HxSwap:   "outerHTML",
+		HxTarget: "#register-page",
+	}) {
+		@components.BaseInput(components.BaseInputProps{
+			Label:  "Give your workspace a name",
+			Name:   "workspace",
+			Type:   "text",
+			Value:  values.Workspace,
+			Errors: errors,
+		})
+		<div class="text-xl font-medium pt-8 pb-4">Personal Details</div>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-2 w-full">
+			@components.BaseInput(components.BaseInputProps{
+				Label:  "First Name",
+				Name:   "first_name",
+				Type:   "text",
+				Value:  values.FirstName,
+				Errors: errors,
+			})
+			@components.BaseInput(components.BaseInputProps{
+				Label:  "Last Name",
+				Name:   "last_name",
+				Type:   "text",
+				Value:  values.LastName,
+				Errors: errors,
+			})
+		</div>
+		@components.InputWithIcon(components.InputWithIconProps{
+			Label:  "Email",
+			Name:   "email",
+			Type:   "email",
+			Value:  values.Email,
+			Errors: errors,
+			Icon:   icons.Email(),
+		})
+		@components.InputWithIcon(components.InputWithIconProps{
+			Label:  "Password",
+			Name:   "password",
+			Type:   "password",
+			Value:  values.Password,
+			Errors: errors,
+			Icon:   icons.Password(),
+		})
+		@components.InputWithIcon(components.InputWithIconProps{
+			Label:  "Confirm Password",
+			Name:   "confirm_password",
+			Type:   "password",
+			Value:  values.ConfirmPassword,
+			Errors: errors,
+			Icon:   icons.Password(),
+		})
+		<div class="form-control pt-6">
+			@components.SubmitButton("Register")
+		</div>
+		<div class="divider">Or</div>
+		<a class="link mx-auto" href="/login">Login</a>
+	}
+}

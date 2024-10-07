@@ -1,0 +1,137 @@
+package components
+
+import (
+	"go-auth-starter/app/utils"
+	"go-auth-starter/types/validation"
+)
+
+templ ValidationError(message string) {
+	if message != "" {
+		<span class="text-sm text-error">{ message }</span>
+	}
+}
+
+templ ErrorAlert(message string) {
+	<div role="alert" class="alert alert-error flex">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			class="h-6 w-6 shrink-0 stroke-current"
+			fill="none"
+			viewBox="0 0 24 24"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+			></path>
+		</svg>
+		<span>{ message }</span>
+	</div>
+}
+
+type PostFormProps struct {
+	Url      string
+	HxSwap   string
+	HxTarget string
+}
+
+templ PostForm(props PostFormProps) {
+	<form
+		hx-headers={ utils.GetCsrfTokenHeader(ctx) }
+		hx-post={ props.Url }
+		hx-swap={ props.HxSwap }
+		hx-target={ props.HxTarget }
+		novalidate
+		class="flex flex-col justify-center mx-auto px-6 sm:px-0 w-full gap-y-2"
+	>
+		{ children... }
+	</form>
+}
+
+type BaseInputProps struct {
+	Label  string
+	Name   string
+	Type   string
+	Value  string
+	Errors validation.FormErrors
+}
+
+templ BaseInput(props BaseInputProps) {
+	<div class="form-control space-y-1">
+		<label for={ props.Name } class="label label-text font-semibold">{ props.Label }</label>
+		<label class="input input-bordered flex items-center gap-2">
+			<input id={ props.Name } type={ props.Type } name={ props.Name } value={ props.Value } autocomplete="on" class="grow"/>
+		</label>
+		@ValidationError(props.Errors[props.Name])
+	</div>
+}
+
+type InputWithIconProps struct {
+	Label  string
+	Name   string
+	Type   string
+	Icon   templ.Component
+	Value  string
+	Errors validation.FormErrors
+}
+
+templ InputWithIcon(props InputWithIconProps) {
+	<div class="form-control space-y-1">
+		<label for={ props.Name } class="label label-text font-semibold">{ props.Label }</label>
+		<label class="input input-bordered flex items-center gap-2">
+			@props.Icon
+			<input id={ props.Name } type={ props.Type } name={ props.Name } value={ props.Value } autocomplete="on" class="grow"/>
+		</label>
+		@ValidationError(props.Errors[props.Name])
+	</div>
+}
+
+templ TextWithIndicator(text string) {
+	<span class="indicator-content">{ text }</span>
+	<span class="loading-indicator loading loading-spinner"></span>
+}
+
+templ SubmitButton(text string) {
+	<button class="btn btn-primary" type="submit">
+		@TextWithIndicator(text)
+	</button>
+}
+
+// uses js to close nearest parent dialog
+templ CloseDialogBtn() {
+	<button
+		class="btn min-w-24 mr-4"
+		type="button"
+		hx-on:click="this.closest('dialog').remove()"
+	>
+		Close
+	</button>
+}
+
+type SelectProps struct {
+	Label       string
+	Name        string
+	Value       string
+	Placeholder string
+	Options     map[string]string
+	Errors      validation.FormErrors
+}
+
+templ Select(props SelectProps) {
+	<div class="form-control space-y-1">
+		<label for={ props.Name } class="label label-text font-semibold">{ props.Label }</label>
+		<select
+			class="select select-bordered w-full"
+			name={ props.Name }
+		>
+			if props.Placeholder != "" {
+				<option disabled selected selected?={ props.Value == "" }>{ props.Placeholder }</option>
+			}
+			for k, v := range props.Options {
+				<option value={ v } selected?={ props.Value == v }>{ k }</option>
+			}
+		</select>
+		@ValidationError(props.Errors[props.Name])
+	</div>
+}

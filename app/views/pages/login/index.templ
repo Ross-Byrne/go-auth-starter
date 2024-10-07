@@ -1,0 +1,42 @@
+package login
+
+import (
+	"go-auth-starter/app/views/components"
+	"go-auth-starter/app/views/layouts"
+	"go-auth-starter/types/validation"
+)
+
+type IndexPageData struct {
+	FormValues LoginFormValues
+	FormErrors validation.FormErrors
+	FlashError string
+}
+
+templ Index() {
+	@IndexWith(IndexPageData{})
+}
+
+templ IndexWithErrorFlash(message string) {
+	@IndexWith(IndexPageData{
+		FormValues: LoginFormValues{},
+		FormErrors: validation.FormErrors{},
+		FlashError: message,
+	})
+}
+
+templ IndexWith(data IndexPageData) {
+	@layouts.BasicPage() {
+		<div id="login-page" class="grid justify-items-center h-full">
+			<div class="grid gap-y-2 self-center max-w-md w-full py-4">
+				<div class="text-2xl font-bold text-center pb-6">Log in to Chronos</div>
+				if len(data.FlashError) > 0 {
+					<div class="content-center w-full pb-6 px-6 sm:px-0">
+						@components.ErrorAlert(data.FlashError)
+					</div>
+				}
+				@LoginForm(data.FormValues, data.FormErrors)
+			</div>
+			<div class="h-10"></div>
+		</div>
+	}
+}

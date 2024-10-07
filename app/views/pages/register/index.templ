@@ -1,0 +1,36 @@
+package register
+
+import (
+	"go-auth-starter/app/views/layouts"
+	"go-auth-starter/types/validation"
+)
+
+type RegisterFormValues struct {
+	Workspace       string `form:"workspace"`
+	FirstName       string `form:"first_name"`
+	LastName        string `form:"last_name"`
+	Email           string `form:"email"`
+	Password        string `form:"password"`
+	ConfirmPassword string `form:"confirm_password"`
+}
+
+type IndexPageData struct {
+	FormValues RegisterFormValues
+	FormErrors validation.FormErrors
+}
+
+templ Index() {
+	@IndexWith(IndexPageData{})
+}
+
+templ IndexWith(data IndexPageData) {
+	@layouts.BasicPage() {
+		<div id="register-page" class="grid justify-items-center h-full">
+			<div class="grid gap-y-2 self-center max-w-md w-full py-4">
+				<div class="text-2xl font-bold text-center pb-6">Create your workspace</div>
+				@RegisterForm(data.FormValues, data.FormErrors)
+			</div>
+			<div class="h-10"></div>
+		</div>
+	}
+}

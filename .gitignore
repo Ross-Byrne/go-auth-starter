@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.dylib
+bin/
 
 # Test binary, built with `go test -c`
 *.test
@@ -17,9 +18,22 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# Mac OS
+.DS_STORE
+
 # Go workspace file
 go.work
-go.work.sum
 
-# env file
+# generated build files
+tmp
+node_modules
+*templ.go
+*output.css
+
+
+sqlite3.db
 .env
+
+
+# test coverage
+coverage/

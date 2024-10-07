@@ -1,0 +1,14 @@
+{
+  "name": "go-auth-starter",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "bunx tailwindcss -i ${ASSETS_PATH}/css/main.css -o ${ASSETS_PATH}/css/output.css --minify",
+    "watch": "bunx tailwindcss -i ${ASSETS_PATH}/css/main.css -o ${ASSETS_PATH}/css/output.css --watch"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.12",
+    "tailwindcss": "^3.4.13"
+  }
+}

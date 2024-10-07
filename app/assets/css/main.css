@@ -1,0 +1,71 @@
+@import "tailwindui.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Setup font */
+:root {
+    font-family: "Inter", sans-serif;
+}
+@supports (font-variation-settings: normal) {
+    :root {
+        font-family: "InterVariable", sans-serif;
+        font-optical-sizing: auto;
+    }
+}
+
+:root {
+    --header-height: 64px;
+}
+
+.header-height {
+    height: var(--header-height);
+}
+
+.content-container {
+    height: calc(100vh - var(--header-height));
+}
+
+.loading-indicator {
+    display: none;
+}
+.indicator-content {
+    display: block;
+}
+
+.htmx-request .loading-indicator {
+    display: inline;
+}
+.htmx-request .indicator-content {
+    display: none;
+}
+
+/* CSS for Drawer */
+
+/* Show / Hide drawer */
+#main-drawer:checked ~ .drawer-menu {
+    margin-left: 0;
+    transition: margin-left 0.2s ease-out;
+}
+
+#main-drawer:not(:checked) ~ .drawer-menu {
+    margin-left: -20rem;
+    transition: margin-left 0.2s ease-in;
+}
+
+/* Override weird css behaviour on linux chrome */
+html:has(.drawer-toggle:checked) {
+    scrollbar-gutter: auto;
+}
+
+:root:has(
+        :is(
+                .modal-open,
+                .modal:target,
+                .modal-toggle:checked + .modal,
+                .modal[open]
+            )
+    ) {
+    scrollbar-gutter: auto;
+}

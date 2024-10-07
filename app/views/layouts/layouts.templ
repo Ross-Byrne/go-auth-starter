@@ -1,0 +1,45 @@
+package layouts
+
+import "go-auth-starter/app/views/components"
+
+templ Base() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script src="/js/htmx/htmx-v2.0.2.min.js"></script>
+			<script src="/js/htmx/idiomorph-ext-v0.3.0.min.js"></script>
+			<link rel="preconnect" href="/"/>
+			<link rel="stylesheet" href="/fonts/inter.css"/>
+			<link rel="stylesheet" href="/css/output.css"/>
+			<title>Go Auth Starter</title>
+		</head>
+		{ children... }
+	</html>
+}
+
+templ BasicPage() {
+	@Base() {
+		<body
+			class="h-dvh overflow-y-auto bg-base-300"
+			hx-ext="morph"
+		>
+			{ children... }
+		</body>
+	}
+}
+
+templ Main() {
+	@Base() {
+		<body
+			class="h-dvh overflow-hidden"
+			hx-ext="morph"
+		>
+			@components.Header()
+			@components.Drawer() {
+				{ children... }
+			}
+		</body>
+	}
+}

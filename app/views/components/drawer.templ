@@ -1,0 +1,33 @@
+package components
+
+import "go-auth-starter/app/utils"
+
+templ Drawer() {
+	<div class="content-container flex flex-row">
+		<input id="main-drawer" type="checkbox" class="drawer-toggle" checked/>
+		@drawerMenu()
+		<div class="content-container overflow-y-auto grow">
+			{ children... }
+		</div>
+	</div>
+}
+
+templ drawerMenu() {
+	<div class="drawer-menu basis-1/5 shrink max-w-80">
+		<ul class="menu bg-base-200 text-base-200-content min-h-full p-4 z-10 gap-y-1">
+			@drawerMenuItem("Dashboard", "/")
+			@drawerMenuItem("Profile", "/profile")
+		</ul>
+	</div>
+}
+
+templ drawerMenuItem(name string, url string) {
+	<li>
+		<a
+			href={ templ.URL(url) }
+			class={ templ.KV("active", url == utils.GetLocation(ctx)) }
+		>
+			{ name }
+		</a>
+	</li>
+}

@@ -1,0 +1,58 @@
+package login
+
+import (
+	"go-auth-starter/app/utils"
+	"go-auth-starter/app/views/components"
+	"go-auth-starter/app/views/icons"
+	"go-auth-starter/types/validation"
+)
+
+type LoginFormValues struct {
+	Email    string `form:"email"`
+	Password string `form:"password"`
+}
+
+func (values *LoginFormValues) Validate() validation.FormErrors {
+	errors := validation.FormErrors{}
+
+	if len(values.Email) == 0 {
+		errors["email"] = validation.REQUIRE_FIELD_MESSAGE
+	} else if !utils.IsValidEmail(values.Email) {
+		errors["email"] = validation.VALID_EMAIL_MESSAGE
+	}
+	if len(values.Password) == 0 {
+		errors["password"] = validation.REQUIRE_FIELD_MESSAGE
+	}
+
+	return errors
+}
+
+templ LoginForm(values LoginFormValues, errors validation.FormErrors) {
+	@components.PostForm(components.PostFormProps{
+		Url:      "/login",
+		HxSwap:   "outerHTML",
+		HxTarget: "#login-page",
+	}) {
+		@components.InputWithIcon(components.InputWithIconProps{
+			Label:  "Email",
+			Name:   "email",
+			Type:   "email",
+			Value:  values.Email,
+			Errors: errors,
+			Icon:   icons.Email(),
+		})
+		@components.InputWithIcon(components.InputWithIconProps{
+			Label:  "Password",
+			Name:   "password",
+			Type:   "password",
+			Value:  values.Password,
+			Errors: errors,
+			Icon:   icons.Password(),
+		})
+		<div class="form-control pt-6">
+			@components.SubmitButton("Login")
+		</div>
+		<div class="divider">Or</div>
+		<a class="link mx-auto" href="/register">Register</a>
+	}
+}
